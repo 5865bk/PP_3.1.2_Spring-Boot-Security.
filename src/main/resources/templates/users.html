@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org" xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<head>
+    <meta charset="UTF-8">
+    <title>Users</title>
+</head>
+<body>
+<div th:insert="~{fragment::header}"></div>
+    <div>
+        <table>
+            <tr>
+                <th>ID</th>
+                <th>Username</th>
+                <th>Имя</th>
+                <th>Фамилия</th>
+                <th>Дата рождения</th>
+                <th>Пароль</th>
+                <th>Роли</th>
+                <th>Действие</th>
+            </tr>
+            <tr th:each="user : ${users}">
+                <td th:text="${user.id}"></td>
+                <td th:text="${user.userName}"></td>
+                <td th:text="${user.firstName}"></td>
+                <td th:text="${user.lastName}"></td>
+                <td th:text="${user.birthDate}"></td>
+                <td><span>********</span></td>
+                <td>
+                    <ul>
+                        <li th:each="role : ${user.roles}" th:text="${role.value}" style="list-style-type: none"></li>
+                    </ul>
+                </td>
+                <td>
+                    <form th:action="@{/admin/users/{id}(id=${user.id})}" style="display: inline-block">
+                        <button type="submit">Редактировать</button>
+                    </form>
+                    <form th:action="@{/admin/users/{id}(id=${user.id})}" th:method="delete" style="display: inline-block">
+                        <button type="submit">Удалить</button>
+                    </form>
+                </td>
+            </tr>
+            <tr>
+                <form th:action="@{/admin/users}" method="post">
+                    <td>
+                        # <input type="hidden" name="id">
+                    </td>
+                    <td>
+                        <input type="text" name="userName">
+                    </td>
+                    <td>
+                        <input type="text" name="firstName">
+                    </td>
+                    <td>
+                        <input type="text" name="lastName">
+                    </td>
+                    <td>
+                        <input type="date" name="birthDate">
+                    </td>
+                    <td>
+                        <input type="password" name="rawPassword">
+                    </td>
+                    <td>
+                        <div th:each="role: ${allRoles}">
+                            <input type="checkbox" th:id="${role.value}"
+                                   name="roles"  th:value="${role.id}">
+                            <label th:for="${role.value}" th:text="${role.value}"></label>
+                        </div>
+                    </td>
+                    <td>
+                        <button type="submit">Добавить</button>
+                    </td>
+                </form>
+            </tr>
+        </table>
+    </div>
+</body>
+</html>
+

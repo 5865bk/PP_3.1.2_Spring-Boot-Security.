@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org" xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<head>
+    <title>Spring Security Example</title>
+</head>
+<body>
+    <div th:insert="~{fragment::header}">
+    </div>
+    <br>
+
+    <h1>Welcome to Index PAGE!</h1>
+    <br>
+
+    <button sec:authorize="isAuthenticated()" onclick="window.location.href = '/user';">Профиль</button>
+    <button sec:authorize="!isAuthenticated()" onclick="window.location.href = '/login';">Login</button>
+</body>
+</html>

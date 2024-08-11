@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org" xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<head>
+  <meta charset="UTF-8">
+  <title>Fragment</title>
+</head>
+<body>
+  <div sec:authorize="isAuthenticated()" th:fragment="header">
+    <form th:action="@{/logout}" method="post">
+      <button type="submit">Выйти</button>
+    </form>
+    <br>
+  </div>
+</body>
+</html>
