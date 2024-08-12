@@ -27,27 +27,6 @@ public class Role implements GrantedAuthority {
         return value;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Role role = (Role) o;
-        return Objects.equals(value, role.value);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(value);
-    }
-
-    @Override
-    public String toString() {
-        return "Role{" +
-               "id=" + id +
-               ", value='" + value + '\'' +
-               '}';
-    }
-
     public Integer getId() {
         return id;
     }
@@ -62,6 +41,27 @@ public class Role implements GrantedAuthority {
 
     public void setValue(String value) {
         this.value = value;
+    }
+
+    @Override
+    public String toString() {
+        return "Role{" +
+                "id=" + id +
+                ", value='" + value + '' ' +
+        '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Role role = (Role) o;
+        return Objects.equals(value, role.value);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(value);
     }
 
 }

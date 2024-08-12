@@ -1,5 +1,6 @@
 package ru.kata.spring.boot_security.demo.service;
 
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.kata.spring.boot_security.demo.model.User;
@@ -13,31 +14,33 @@ import java.util.Optional;
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
+    private final BCryptPasswordEncoder passwordEncoder;
 
-    public UserServiceImpl(UserRepository userRepository) {
+    public UserServiceImpl(UserRepository userRepository, BCryptPasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
     @Transactional
     public User add(User user) {
+        encodeUserPassword(user);
         return userRepository.save(user);
     }
 
     @Override
     @Transactional
     public boolean update(User user) {
-        return userRepository.findById(user.getId())
-                .map(entity -> {
-                    entity.setUserName(user.getUserName());
-                    entity.setFirstName(user.getFirstName());
-                    entity.setLastName(user.getLastName());
-                    entity.setBirthDate(user.getBirthDate());
-                    entity.setPassword(user.getPassword());
-                    entity.setRoles(user.getRoles());
-                    return true;
-                })
-                .orElse(false);
+        // Проверяем, нужно ли обновить пароль
+        if (!user.getPassword().startsWith("$2a$")) {
+            encodeUserPassword(user);
+        }
+
+        return userRepository.update(user);
+    }
+
+    private void encodeUserPassword(User user) {
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
     }
 
     @Override
@@ -62,5 +65,4 @@ public class UserServiceImpl implements UserService {
     public Optional<User> findById(Long id) {
         return userRepository.findById(id);
     }
-
 }
