@@ -31,13 +31,17 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public boolean update(User user) {
-        // Проверяем, нужно ли обновить пароль
-        if (!user.getPassword().startsWith("$2a$")) {
-            encodeUserPassword(user);
-        }
+        encodeUserPassword(user); // Хеширование пароля
+        User savedUser = userRepository.save(user); // Сохранение пользователя и получение результата
 
-        return userRepository.update(user);
+        // Проверка успешности операции сохранения
+        if (savedUser != null) {
+            return true; // Возвращаем true, если операция сохранения прошла успешно
+        } else {
+            return false; // Возвращаем false, если операция сохранения не удалась
+        }
     }
+
 
     private void encodeUserPassword(User user) {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
@@ -65,4 +69,5 @@ public class UserServiceImpl implements UserService {
     public Optional<User> findById(Long id) {
         return userRepository.findById(id);
     }
+
 }
