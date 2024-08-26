@@ -24,27 +24,29 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public User add(User user) {
+        if (user.getPassword() == null || user.getPassword().isEmpty()) {
+            throw new IllegalArgumentException("Password cannot be null or empty");
+        }
+
         encodeUserPassword(user);
         return userRepository.save(user);
+    }
+
+    private void encodeUserPassword(User user) {
+        String encodedPassword = passwordEncoder.encode(user.getPassword());
+        user.setPassword(encodedPassword);
     }
 
     @Override
     @Transactional
     public boolean update(User user) {
-        encodeUserPassword(user); // Хеширование пароля
-        User savedUser = userRepository.save(user); // Сохранение пользователя и получение результата
-
-        // Проверка успешности операции сохранения
-        if (savedUser != null) {
-            return true; // Возвращаем true, если операция сохранения прошла успешно
-        } else {
-            return false; // Возвращаем false, если операция сохранения не удалась
+        if (user == null) {
+            throw new IllegalArgumentException("User cannot be null");
         }
-    }
 
-
-    private void encodeUserPassword(User user) {
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        encodeUserPassword(user);
+        User updatedUser = userRepository.save(user);
+        return updatedUser != null; // Возвращаем результат сохранения пользователя не равный null
     }
 
     @Override
@@ -69,5 +71,4 @@ public class UserServiceImpl implements UserService {
     public Optional<User> findById(Long id) {
         return userRepository.findById(id);
     }
-
 }

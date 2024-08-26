@@ -40,7 +40,7 @@ public class Role implements GrantedAuthority {
     }
 
     public void setValue(String value) {
-        this.value = value;
+        this.value = value; // Удаление BCryptPasswordEncoder из метода setValue
     }
 
     @Override
